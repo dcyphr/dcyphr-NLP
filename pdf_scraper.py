@@ -28,7 +28,7 @@ def scrape_html(link="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7264580/"):
     to_remove = soup.find_all(["a", "em", "span"]) 
     for element in to_remove:
         element.extract()
-    new_text = re.sub(r', ,', '', str(soup.find_all('p', {'id' : re.compile('^__')})))
+    new_text = re.sub(r', ,', '', str(soup.find_all('p', {'id' : re.compile('^')})))
     new_text = re.sub(r'<[^>]*>', '', new_text)[1:-1]
     return new_text
 
