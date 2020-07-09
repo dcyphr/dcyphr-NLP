@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 lst=['https://www.ncbi.nlm.nih.gov/pubmed/8303295',
      'https://www.ncbi.nlm.nih.gov/pubmed/16590258',
