@@ -5,7 +5,8 @@ import argparse
 import csv
 
 def make_file(filepath, outpath):
-    clean = re.compile("""<.*?>|&nbsp;|style=("|').*?("|')|%|([ ]|[\t]){2,}|\n""")
+    # compiled regex to remove HTML tags, nbsp, style attributes, percent signs, excessive spacing, and newlines
+    clean = re.compile("""<.*?>|&nbsp;|style=("|').*?("|')|%|([ ]|[\t]){2,}|\r?\n|\r""")
     maxInt = sys.maxsize
 
     while True:
@@ -18,15 +19,18 @@ def make_file(filepath, outpath):
         except OverflowError:
             maxInt = int(maxInt/10)
 
+    # opens csv file
     with open(filepath, newline='') as csvfile:
         file_reader = csv.reader(csvfile, delimiter=' ')
+
+        # for each row in csv, split up by section
         for row in file_reader:
             data = row[0]
-            sections = re.split('(<h2.*?>)', data)
+            sections = re.split('(<h2.*?>)', data) # regex to split by section
             for section in sections:
-                section = section.replace('</h2>', ' | ')
-                section = re.sub(clean, '', section)
-                target = open(outpath, 'a')
+                section = section.replace('</h2>', ' | ') # replaces closing tag with delimiter
+                section = re.sub(clean, '', section) # cleans section using compiled regex from above
+                target = open(outpath, 'a') # opens and writes into new file
                 target.write(section + ' \n')
                 target.close()
 
