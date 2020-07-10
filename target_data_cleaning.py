@@ -5,7 +5,7 @@ import argparse
 import csv
 
 def make_file(filepath, outpath):
-    clean = re.compile('<.*?>|&nbsp;')
+    clean = re.compile("""<.*?>|&nbsp;|style=("|').*?("|')|%|([ ]|[\t]){2,}|\n""")
     maxInt = sys.maxsize
 
     while True:
@@ -22,9 +22,9 @@ def make_file(filepath, outpath):
         file_reader = csv.reader(csvfile, delimiter=' ')
         for row in file_reader:
             data = row[0]
-            sections = re.split('<h2(.*?)>', data)
+            sections = re.split('(<h2.*?>)', data)
             for section in sections:
-                section = section.replace('</h2>', ' |')
+                section = section.replace('</h2>', ' | ')
                 section = re.sub(clean, '', section)
                 target = open(outpath, 'a')
                 target.write(section + ' \n')
