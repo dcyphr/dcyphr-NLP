@@ -6,75 +6,99 @@ from bs4 import BeautifulSoup
 import csv
 
 lst=[]
+""" Reading the csv file """
 with open('links.csv','r') as file:
   reader=csv.reader(file)
   for row in reader:
     lst.append(row[0])
-print(lst[1:])
 
-# lst=['https://www.ncbi.nlm.nih.gov/pubmed/8303295',
-#      'https://www.ncbi.nlm.nih.gov/pubmed/16590258',
-#      'https://www.ncbi.nlm.nih.gov/pubmed/13054692',
-#      'https://www.ncbi.nlm.nih.gov/pubmed/1701568',
-#      'https://www.ncbi.nlm.nih.gov/pubmed/8004676',
-#      'https://www.ncbi.nlm.nih.gov/pubmed/?term=Wolves%2C+Moose%2C+and+Tree+Rings+on+Isle+Royale.',
-# 'https://www.ncbi.nlm.nih.gov/pubmed/?term=Lateral+Transfer+of+Genes+from+Fungi+Underlies+Carotenoid+Production+in+Aphids.',
-# 'https://www.ncbi.nlm.nih.gov/pubmed/?term=Contingency+and+Determinism+in+Replicated+Adaptive+Radiations+of+Island+Lizards.',
-# 'https://www.ncbi.nlm.nih.gov/pubmed/2704419',
-# 'https://www.ncbi.nlm.nih.gov/pubmed/9794762',
-# 'https://www.ncbi.nlm.nih.gov/pubmed/?term=An+Expressed+Fgf4+Retrogene+Is+Associated+with+Breed-Defining+Chondrodysplasia+in+Domestic+Dogs.',
-# 'https://www.cell.com/fulltext/0092-8674(86)90665-3',
-# 'https://www.nejm.org/doi/full/10.1056/NEJM200002243420801',
-# 'https://science.sciencemag.org/content/318/5853/1108',
-# 'https://science.sciencemag.org/content/309/5734/630',
-# # 'https://academic.oup.com/jtm/advance-article/doi/10.1093/jtm/taaa037/5808003',
-# # 'https://www.ajronline.org/doi/full/10.2214/AJR.20.22961',
-# 'https://www.eurosurveillance.org/content/10.2807/1560-7917.ES.2020.25.11.2000258',
-# 'https://www.nature.com/articles/s41579-018-0118-9'
-#      ]
+def get_sim():
+  """Gets similar articles """
+  sim=soup.find('div',class_='similar-articles') 
+  if(sim):
+    index3=sim.find('articles')
+    sim='Similar Articles|'+sim.text[27:].strip()
+    f.write(sim)
 
-# for i in lst:
 
-#   result=requests.get(i)
-#   src=result.content
-#   soup= BeautifulSoup(src,'lxml')
-#   match=soup.find('div',class_='abstract')
-#   if(match!=None):
-#     index=match.text.find('Abstract')
-#     m=match.text[index+9:]
+def get_ref():
+  """ Gets reference to articles """
+    
+  ref=soup.find('div',class_='references')
+  if(ref):
+    index3=sim.find('References')
+    ref='References|'+ref.text[19:].strip()
+    f.write(ref)
 
-#     abstract='Abstract|'+m.strip()
-#   else:
-#     abstract=""
-#   # print(abstract)
-#   heading=soup.find('h1')
-#   head=heading.text.strip()
-#   print(head)
-#   print(abstract)
-#   print('\n')
+def get_cit():
+  """ Gets citations """
+  cite=soup.find('div',class_='citedby-articles')
+  if(cite):
+    index3=cite.find('articles')
+    cite='Cited By|'+cite.text[42:].strip()
+    f.write(cit)
+
+def get_pub():
+  """ Gets publications """
+
+  pub=soup.find('div',class_='publication-types keywords-section')
+  if(pub!=None):
+    index3=pub.find('types')
+    pub='Publications|'+pub.text[30:].strip()
+    # print(pub)
+    f.write(pub)
+
+def get_head():
+  """Gets the headings"""
+
+    heading=soup.find('h1')
+    if(heading!=None):
+      head=heading.text.strip()
+      # print(head)
+      f.write(head)
+
+
+def get_abstract():
+  """ Gets the abstracts """
+  match=soup.find('div',class_='abstract')
+  if(match!=None):
+    
+    index=match.text.find('Abstract')
+    m=match.text[index+8:]
+    abstract='Abstract|'+m.strip()
+    # print(abstract)
+    f.write(abstract)
 
 
 exception=[]
+f = open("file.txt", "x")
 for i in lst[1:]:
   try:
 
     result=requests.get(i)
     src=result.content
     soup= BeautifulSoup(src,'lxml')
-    match=soup.find('div',class_='abstract')
-    if(match!=None):
-      index=match.text.find('Abstract')
-      m=match.text[index+8:]
+    
+    
+    # else:
+    #   abstract=""
+    # # print(abstract)
 
-      abstract='Abstract|'+m.strip()
-    else:
-      abstract=""
+
+    # print(head)
     # print(abstract)
-    heading=soup.find('h1')
-    head=heading.text.strip()
-    print(head)
-    print(abstract)
+    # print('\n')
+    get_head()
     print('\n')
+    get_abstract()
+    print('\n')
+    get_sim()
+    print('\n')
+    get_ref()
+    print('\n')
+    get_cit()
+    print('\n')
+    get_pub()
 
   except:
     exception.append(i)
