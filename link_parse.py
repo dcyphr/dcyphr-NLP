@@ -49,10 +49,8 @@ def get_pub():
     f.write(pub)
 
 def get_head():
-  """Gets the headings"""
-
-    heading=soup.find('h1')
-    if(heading!=None):
+  heading=soup.find('h1')
+  if(heading!=None):
       head=heading.text.strip()
       # print(head)
       f.write(head)
