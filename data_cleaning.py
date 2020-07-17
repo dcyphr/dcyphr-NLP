@@ -59,6 +59,31 @@ def make_file(filepath, source_out, target_out):
 
 
 def main():
+    parser = argparse.ArgumentParser(
+            description = 'Transforms csv (link, summary) to source.txt and target.txt',
+            formatter_class = argparse.ArgumentDefaultsHelpFormatter
+            )
+    parser.add_argument('src', type = str,
+            help = 'Filename for input csv')
+    parser.add_argument('out_source', type=str,
+            help = 'Filename for output source.txt')
+    parser.add_argument('out_target', type=str,
+            help = 'Filename for output target.txt')
+    args = parser.parse_args()
+
+    input_file = args.src
+    output_source = args.out_source
+    output_target = args.out_target
+
+    if os.path.isfile(output_source):
+        os.remove(output_source)
+    if os.path.isfile(output_target):
+        os.remove(output_target)
+    open(output_source, 'a').close()
+    open(output_target, 'a').close()
+    
+    make_file(input_file, output_source, output_target)
+
     print(clean_target("<h2 style=blah>Abstract</h2><p>This is some text</p><h2>Introduction</h2><span>blah blah</span>"))
 
 if __name__ == '__main__':
