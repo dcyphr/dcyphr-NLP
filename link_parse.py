@@ -163,7 +163,7 @@ def scimag():
     
 def medrxiv():
   """Takes in a list of medrxiv links and retruns a list of dictionaries"""
-   for j in medrxiva:
+  for j in medrxiva:
     result=requests.get(j)
     src = result.text
     soup=BeautifulSoup(src, 'lxml')
