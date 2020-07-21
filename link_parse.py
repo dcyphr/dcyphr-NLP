@@ -1,16 +1,59 @@
 import requests
-
-
 from bs4 import BeautifulSoup
 
-import csv
 
-lst=[]
-""" Reading the csv file """
-with open('links.csv','r') as file:
-  reader=csv.reader(file)
-  for row in reader:
-    lst.append(row[0])
+cell=['https://www.cell.com/fulltext/0092-8674(86)90665-3','https://www.cell.com/immunity/fulltext/S1074-7613(20)30170-9']
+nejm=['https://www.nejm.org/doi/full/10.1056/NEJM200002243420801','http://www.nejm.org/doi/10.1056/NEJMc2004973','https://www.nejm.org/doi/full/10.1056/NEJMc2011400',
+      
+ 'https://www.nejm.org/doi/full/10.1056/NEJMoa2016638' ]
+
+
+ncbi=['https://www.ncbi.nlm.nih.gov/pubmed/8303295',
+      'https://www.ncbi.nlm.nih.gov/pubmed/16590258',
+'https://www.ncbi.nlm.nih.gov/pubmed/13054692',
+'https://www.ncbi.nlm.nih.gov/pubmed/1701568',
+'https://www.ncbi.nlm.nih.gov/pubmed/8004676',
+'https://www.ncbi.nlm.nih.gov/pubmed/?term=Wolves%2C+Moose%2C+and+Tree+Rings+on+Isle+Royale.',
+'https://www.ncbi.nlm.nih.gov/pubmed/?term=Lateral+Transfer+of+Genes+from+Fungi+Underlies+Carotenoid+Production+in+Aphids.',
+'https://www.ncbi.nlm.nih.gov/pubmed/?term=Contingency+and+Determinism+in+Replicated+Adaptive+Radiations+of+Island+Lizards.',
+'https://www.ncbi.nlm.nih.gov/pubmed/2704419',
+'https://www.ncbi.nlm.nih.gov/pubmed/9794762',
+      
+      
+      
+      
+      
+      
+      
+      'https://www.ncbi.nlm.nih.gov/pubmed/8303295','https://www.ncbi.nlm.nih.gov/pubmed/16590258','https://www.ncbi.nlm.nih.gov/pubmed/13054692',
+      'https://www.ncbi.nlm.nih.gov/pubmed/1701568','https://www.ncbi.nlm.nih.gov/pubmed/8004676','https://pubmed.ncbi.nlm.nih.gov/32275812/',
+      'https://pubmed.ncbi.nlm.nih.gov/32081636/','https://www.ncbi.nlm.nih.gov/pubmed/?term=Wolves%2C+Moose%2C+and+Tree+Rings+on+Isle+Royale',
+      'https://www.ncbi.nlm.nih.gov/pubmed/?term=Lateral+Transfer+of+Genes+from+Fungi+Underlies+Carotenoid+Production+in+Aphids.'
+      
+      
+      
+      ]  
+pmc=['https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5052149/','https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3797217/pdf/nihms482109.pdf',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7048352/pdf/OAMJMS-7-3733.pdf',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5588700/pdf/nihms867337.pdf',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7162776/',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2546865/',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5467610/',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3056401/',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6109018/pdf/11606_2018_Article_4462.pdf',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6509028/pdf/191e505.pdf',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/25849572/',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/22401530/',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7219423/pdf/main.pdf',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5201116/',
+     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5447185/pdf/SaudiMedJ-38-344.pdf',
+     
+     
+     
+     
+     ]
+
+
 
 def cell_extract():
   """Returns a list of extract from cell articles """
@@ -51,7 +94,7 @@ def ncbi_pubmed_extract():
       dicti['Abstract']=(j.text.strip())
     listi.append(dicti)
   return listi
-
+      
 
 def njem_extract():
   """Extracts njem articles """
@@ -78,28 +121,25 @@ def njem_extract():
 
 
 def pmc_extract():
-  dicti=[]
+  listi=[]
   m=['Abstract','Introduction']
   for i in pmc:
+    dicti={}
     result = requests.get(i)
     src = result.text
     soup = BeautifulSoup(src, 'lxml')
 
     match = soup.find_all('div',class_="tsec sec")
-    for i in range(len(match[:5])):
+    match2=soup.find_all('h2',class_='head no_bottom_margin')
+    for j in range(len(match[:4])):
+      key=len(match2[j].text)
       
-      dicti.append(match[i].text)
+      dicti[(match2[j].text)]=(match[j].text[key:])
+    listi.append(dicti)
       
       
-  for i in dicti:
-
-    print(i)
-    print('\n')
-    print('\n')
-  # print(match2)
-  # for k in range(len(match)):
-  #   print(match2[k].text)
-  #   print(match[k].text)
+  
+  return listi
 
 def scimag():
   for i in sci_direct:
@@ -121,93 +161,37 @@ def scimag():
       print(f.text)
 
     
+def medrxiv():
+  """Takes in a list of medrxiv links and retruns a list of dictionaries"""
+   for j in medrxiva:
+    result=requests.get(j)
+    src = result.text
+    soup=BeautifulSoup(src, 'lxml')
 
 
-def get_sim():
-  """Gets similar articles """
-  sim=soup.find('div',class_='similar-articles') 
-  if(sim):
-    index3=sim.find('articles')
-    sim='Similar Articles|'+sim.text[27:].strip()
-    f.write(sim)
-
-
-def get_ref():
-  """ Gets reference to articles """
+    match = soup.find_all('div',class_='section abstract')
     
-  ref=soup.find('div',class_='references')
-  if(ref):
-    index3=sim.find('References')
-    ref='References|'+ref.text[19:].strip()
-    f.write(ref)
-
-def get_cit():
-  """ Gets citations """
-  cite=soup.find('div',class_='citedby-articles')
-  if(cite):
-    index3=cite.find('articles')
-    cite='Cited By|'+cite.text[42:].strip()
-    f.write(cit)
-
-def get_pub():
-  """ Gets publications """
-
-  pub=soup.find('div',class_='publication-types keywords-section')
-  if(pub!=None):
-    index3=pub.find('types')
-    pub='Publications|'+pub.text[30:].strip()
-    # print(pub)
-    f.write(pub)
-
-def get_head():
-  heading=soup.find('h1')
-  if(heading!=None):
-      head=heading.text.strip()
-      # print(head)
-      f.write(head)
+    for i in match:
+      print(i.text)
+      print('\n')
 
 
-def get_abstract():
-  """ Gets the abstracts """
-  match=soup.find('div',class_='abstract')
-  if(match!=None):
+def scrape_nature():
+  listi=[]
+  for j in nature:
+    dicti={}
+    result=requests.get(j)
+    src = result.text
+    soup=BeautifulSoup(src, 'lxml')
+    match2 = soup.find_all('h2',class_='c-article-section__title')
+    match = soup.find_all('div',class_='c-article-section')
     
-    index=match.text.find('Abstract')
-    m=match.text[index+8:]
-    abstract='Abstract|'+m.strip()
-    # print(abstract)
-    f.write(abstract)
+    for i in range(len(match2)):
+      key=(match2[i].text)
+      l=len(key)
+      dicti[key]=(match[i].text[l:])
+    listi.append(dicti)
+  return listi
 
 
-exception=[]
-f = open("file.txt", "x")
-for i in lst[1:]:
-  try:
 
-    result=requests.get(i)
-    src=result.content
-    soup= BeautifulSoup(src,'lxml')
-    
-    
-    # else:
-    #   abstract=""
-    # # print(abstract)
-
-
-    # print(head)
-    # print(abstract)
-    # print('\n')
-    get_head()
-    print('\n')
-    get_abstract()
-    print('\n')
-    get_sim()
-    print('\n')
-    get_ref()
-    print('\n')
-    get_cit()
-    print('\n')
-    get_pub()
-
-  except:
-    exception.append(i)
