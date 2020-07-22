@@ -66,31 +66,31 @@ def lancet(lancetlink):
     dicti[(head[i].text)]=(para[i].text)
   return dicti
 
-def cell_extract():
+def cell_extract(link):
   """Returns a list of extract from cell articles """
   dicti={}
-  listi=[]
-  for i in cell:
-    result=requests.get(i)
-    src=result.content
-    soup= BeautifulSoup(src,'lxml')
-    match1=soup.find_all(class_='sectionTitle')
-    match=soup.find_all('div',class_='section-paragraph')
-    # match=soup.find_all('section')
-    if(match1==[]):
+  
+ 
+  result=requests.get(link)
+  src=result.content
+  soup= BeautifulSoup(src,'lxml')
+  match1=soup.find_all(class_='sectionTitle')
+  match=soup.find_all('div',class_='section-paragraph')
+  # match=soup.find_all('section')
+  if(match1==[]):
+    dicti['Abstract:']=(match[0].text)
+    
 
-      dicti['Abstract:']=(match[0].text)
-      listi.append(dicti)
+  else:
+    dicti={}
+    for j in range(len(match1)):
+      dicti[(match1[j].text)]=(match[j].text)
 
-    else:
-      dicti={}
-      for j in range(len(match1)):
-        
-        dicti[(match1[j].text)]=(match[j].text)
-      listi.append(dicti)
 
   
-  return listi
+  return dicti
+
+
 
 def ncbi_pubmed_extract():
   """ Gets the abstracts """
