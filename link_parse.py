@@ -53,7 +53,18 @@ pmc=['https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5052149/','https://www.ncbi.n
      
      ]
 
+def lancet(lancetlink):
+  """Takes a lancet link and returns a dictionary"""
+  dicti={}
+  result=requests.get(lancetlink)
+  src=result.text
+  soup=BeautifulSoup(src,'lxml')
+  head=soup.find_all('h3')[:5]
+  para=soup.find_all('div',class_='section-paragraph')[:5]
 
+  for i in range(len(head)):
+    dicti[(head[i].text)]=(para[i].text)
+  return dicti
 
 def cell_extract():
   """Returns a list of extract from cell articles """
@@ -175,23 +186,26 @@ def medrxiv():
       print(i.text)
       print('\n')
 
-
-def scrape_nature():
-  listi=[]
-  for j in nature:
-    dicti={}
-    result=requests.get(j)
-    src = result.text
-    soup=BeautifulSoup(src, 'lxml')
-    match2 = soup.find_all('h2',class_='c-article-section__title')
-    match = soup.find_all('div',class_='c-article-section')
+def scrape_nature(naturelink):
+  """Takes in a nature link and returns a dictionary"""
+  dicti={}
+  result=requests.get(naturelink)
+  src = result.text
+  soup=BeautifulSoup(src, 'lxml')
+  match2 = soup.find_all('h2',class_='c-article-section__title')
+  match = soup.find_all('div',class_='c-article-section')
     
-    for i in range(len(match2)):
-      key=(match2[i].text)
-      l=len(key)
-      dicti[key]=(match[i].text[l:])
-    listi.append(dicti)
-  return listi
+  for i in range(len(match2)):
+    key=(match2[i].text)
+    l=len(key)
+    dicti[key]=(match[i].text[l:])
+    
+  return dicti
+
+
+
+
+
 
 
 

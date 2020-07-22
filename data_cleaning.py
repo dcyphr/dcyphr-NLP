@@ -2,6 +2,8 @@ import os
 import argparse
 import sys
 import re
+import link_parse
+# USE THIS COMMAND TO RUN FILE:  python target_data_cleaning.py summary.csv summary.txt
 
 # compiled regex to remove HTML tags, nbsp, style attributes, percent signs, excessive spacing, and newlines
 clean = re.compile("""<.*?>|&nbsp;|style=("|').*?("|')|%|([ ]|[\t]){2,}|\r?\n|\r""")
@@ -11,7 +13,16 @@ def scrape_function(link):
     """
     Write function to scrape links and return dictionary of {section_header:section_text}
     """
-    return
+    if('lancet' in link):
+        dicti=lancet(link)
+    elif('cell' in link):
+        dicti=cell_extract(link)
+    elif('pubmed' in link):
+        dicti=ncbi_pubmed_extract(link)
+    elif('nature' in link):
+        dicti=scrape_nature(link)
+    return dicti
+
 
 def clean_target(summary):
     sections = re.split('<h2.*?>', summary)
