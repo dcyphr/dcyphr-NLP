@@ -3,6 +3,7 @@ import argparse
 import sys
 import re
 import link_parse
+import csv
 # USE THIS COMMAND TO RUN FILE:  python target_data_cleaning.py summary.csv summary.txt
 
 # compiled regex to remove HTML tags, nbsp, style attributes, percent signs, excessive spacing, and newlines
@@ -67,6 +68,22 @@ def make_file(filepath, source_out, target_out):
 
             sections_original = scrape_function(source_article_link) # outputs a dict
             sections_target = clean_target(target_summary) # outputs a dict
+            
+def write_file(sections_original,sections_target):
+    listi=sections_original
+    listi2=sections_target
+    exception=[]
+    f = open("file5.txt","w")
+    for i in listi.keys():
+        if i in listi2.keys():
+            f.write('\n')
+            f.write(i)
+            f.write('\n')
+            f.write(listi[i])
+
+
+
+
             
 
 

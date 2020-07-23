@@ -92,65 +92,54 @@ def cell_extract(link):
 
 
 
-def ncbi_pubmed_extract():
-  """ Gets the abstracts """
-  listi=[]
-  for i in ncbi:
-    dicti={}
-    result=requests.get(i)
-    src=result.content
-    soup= BeautifulSoup(src,'lxml')
-    match=soup.find_all('div',class_='abstract-content selected')
-    for j in match:
-      dicti['Abstract']=(j.text.strip())
-    listi.append(dicti)
-  return listi
-      
+def ncbi_pubmed_extract(link):
+  """ Gets the ncbi abstracts"""
+  dicti={}
+  result=requests.get(link)
+  src=result.content
+  soup= BeautifulSoup(src,'lxml')
+  match=soup.find_all('div',class_='abstract-content selected')
+  for j in match:
+    dicti['Abstract']=(j.text.strip())
 
-def njem_extract():
+  return dicti
+      
+      
+def njem_extract(link):
   """Extracts njem articles """
-  listi=[]
-  for i in nejm:
+  dicti={}
+  result = requests.get(link)
+  src = result.text
+  soup = BeautifulSoup(src, 'lxml')
+  match=soup.find_all('section',class_='o-article-body__section')
+  for i in match[:5]:
+    k=len((i.text.split()[0]))
+    dicti[(i.text.split()[0])]=i.text[k+1:].strip()
+  if 'Abstract' not in dicti.keys():
+    match2=soup.find_all('p',class_='f-body')
     dicti={}
-    result = requests.get(i)
-    src = result.text
-    soup = BeautifulSoup(src, 'lxml')
-    match=soup.find_all('section',class_='o-article-body__section')
-    for i in match[:5]:
-      k=len((i.text.split()[0]))
-      dicti[(i.text.split()[0])]=i.text[k+1:].strip()
-    
-      if 'Abstract' not in dicti.keys():
-        match2=soup.find_all('p',class_='f-body')
-        dicti={}
-        s=""
-        for i in match2:
-          s+=i.text
-        dicti['Abstract']=s
-    listi.append(dicti)
-  return listi
+    s=""
+    for i in match2:
+      s+=i.text
+      dicti['Abstract']=s
 
+  return dicti
 
-def pmc_extract():
-  listi=[]
-  m=['Abstract','Introduction']
-  for i in pmc:
-    dicti={}
-    result = requests.get(i)
-    src = result.text
-    soup = BeautifulSoup(src, 'lxml')
+      
+def pmc_extract(link):
+  dicti={}
+  result = requests.get(link)
+  src = result.text
+  soup = BeautifulSoup(src, 'lxml')
+  match = soup.find_all('div',class_="tsec sec")
+  match2=soup.find_all('h2',class_='head no_bottom_margin')
+  for j in range(len(match2)):
+    key=len(match2[j].text)  
+    dicti[(match2[j].text)]=(match[j].text[key:])
+  for i in match2:
+    print(i.text)
 
-    match = soup.find_all('div',class_="tsec sec")
-    match2=soup.find_all('h2',class_='head no_bottom_margin')
-    for j in range(len(match[:4])):
-      key=len(match2[j].text)
-      
-      dicti[(match2[j].text)]=(match[j].text[key:])
-    listi.append(dicti)
-      
-      
-  
-  return listi
+  return dicti
 
 def scimag():
   for i in sci_direct:
