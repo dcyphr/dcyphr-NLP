@@ -57,19 +57,16 @@ def make_file(filepath, source_out, target_out):
 
         # for each row in csv, split up by section
         for row in file_reader:
-            print(row)
-            print(type(row))
             souce_article_link = row[0]
             target_summary = row[1]
-
             # TODO
             """
             Scrape from source_article_link
             Check if section scraped from links matches with sections in summary
             """
 
-            sections_original = scrape_function(source_article_link) # outputs a dict
-            sections_target = clean_target(target_summary) # outputs a dict
+            sections_original = scrape_function(row[0]) # outputs a dict
+            sections_target = clean_target(row[1]) # outputs a dict
             
 def write_file(sections_original,sections_target):
     listi=sections_original
