@@ -53,10 +53,12 @@ def make_file(filepath, source_out, target_out):
 
     # opens csv file
    with open(filepath, newline='') as csvfile:
-        file_reader = csv.reader(csvfile, delimiter=' ')
+        file_reader = csv.reader(csvfile, delimiter=',')
 
         # for each row in csv, split up by section
         for row in file_reader:
+            print(row)
+            print(type(row))
             souce_article_link = row[0]
             target_summary = row[1]
 
