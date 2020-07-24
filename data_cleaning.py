@@ -28,6 +28,20 @@ def scrape_function(link):
         elif('nature' in link):
             print('nature')
             dicti=scrape_nature(link)
+        elif('nejm' in link):
+            print('nejm')
+            dicti=nejm_extract(link)
+        elif('ncbi' in link):
+            print('pmc')
+            dicti=pmc_extract(link)
+        elif('sciencemag' in link):
+            print('scimag')
+            sciencemag()
+        elif('medrxiv' in link):
+            print('medrxiv')
+            medrxiv()
+        else:
+            print('other',link)
     except:
         print(link)
     return dicti

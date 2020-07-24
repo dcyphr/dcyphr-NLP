@@ -52,7 +52,7 @@ def ncbi_pubmed_extract(link):
   return dicti
       
       
-def njem_extract(link):
+def nejm_extract(link):
   """Extracts njem articles """
   dicti={}
   result = requests.get(link)
