@@ -1,58 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-
-
-cell=['https://www.cell.com/fulltext/0092-8674(86)90665-3','https://www.cell.com/immunity/fulltext/S1074-7613(20)30170-9']
-nejm=['https://www.nejm.org/doi/full/10.1056/NEJM200002243420801','http://www.nejm.org/doi/10.1056/NEJMc2004973','https://www.nejm.org/doi/full/10.1056/NEJMc2011400',
-      
- 'https://www.nejm.org/doi/full/10.1056/NEJMoa2016638' ]
-
-
-ncbi=['https://www.ncbi.nlm.nih.gov/pubmed/8303295',
-      'https://www.ncbi.nlm.nih.gov/pubmed/16590258',
-'https://www.ncbi.nlm.nih.gov/pubmed/13054692',
-'https://www.ncbi.nlm.nih.gov/pubmed/1701568',
-'https://www.ncbi.nlm.nih.gov/pubmed/8004676',
-'https://www.ncbi.nlm.nih.gov/pubmed/?term=Wolves%2C+Moose%2C+and+Tree+Rings+on+Isle+Royale.',
-'https://www.ncbi.nlm.nih.gov/pubmed/?term=Lateral+Transfer+of+Genes+from+Fungi+Underlies+Carotenoid+Production+in+Aphids.',
-'https://www.ncbi.nlm.nih.gov/pubmed/?term=Contingency+and+Determinism+in+Replicated+Adaptive+Radiations+of+Island+Lizards.',
-'https://www.ncbi.nlm.nih.gov/pubmed/2704419',
-'https://www.ncbi.nlm.nih.gov/pubmed/9794762',
-      
-      
-      
-      
-      
-      
-      
-      'https://www.ncbi.nlm.nih.gov/pubmed/8303295','https://www.ncbi.nlm.nih.gov/pubmed/16590258','https://www.ncbi.nlm.nih.gov/pubmed/13054692',
-      'https://www.ncbi.nlm.nih.gov/pubmed/1701568','https://www.ncbi.nlm.nih.gov/pubmed/8004676','https://pubmed.ncbi.nlm.nih.gov/32275812/',
-      'https://pubmed.ncbi.nlm.nih.gov/32081636/','https://www.ncbi.nlm.nih.gov/pubmed/?term=Wolves%2C+Moose%2C+and+Tree+Rings+on+Isle+Royale',
-      'https://www.ncbi.nlm.nih.gov/pubmed/?term=Lateral+Transfer+of+Genes+from+Fungi+Underlies+Carotenoid+Production+in+Aphids.'
-      
-      
-      
-      ]  
-pmc=['https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5052149/','https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3797217/pdf/nihms482109.pdf',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7048352/pdf/OAMJMS-7-3733.pdf',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5588700/pdf/nihms867337.pdf',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7162776/',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2546865/',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5467610/',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3056401/',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6109018/pdf/11606_2018_Article_4462.pdf',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6509028/pdf/191e505.pdf',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/25849572/',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/pmid/22401530/',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7219423/pdf/main.pdf',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5201116/',
-     'https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5447185/pdf/SaudiMedJ-38-344.pdf',
-     
-     
-     
-     
-     ]
-
 def lancet(lancetlink):
   """Takes a lancet link and returns a dictionary"""
   dicti={}
@@ -176,7 +123,6 @@ def medrxiv():
       print('\n')
 
 def scrape_nature(naturelink):
-  """Takes in a nature link and returns a dictionary"""
   dicti={}
   result=requests.get(naturelink)
   src = result.text
@@ -190,6 +136,9 @@ def scrape_nature(naturelink):
     dicti[key]=(match[i].text[l:])
     
   return dicti
+
+
+
 
 
 

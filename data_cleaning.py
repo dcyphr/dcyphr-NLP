@@ -2,7 +2,7 @@ import os
 import argparse
 import sys
 import re
-import link_parse
+from link_parse import *
 import csv
 # USE THIS COMMAND TO RUN FILE:  python target_data_cleaning.py summary.csv summary.txt
 
@@ -14,24 +14,32 @@ def scrape_function(link):
     """
     Write function to scrape links and return dictionary of {section_header:section_text}
     """
-    if('lancet' in link):
-        dicti=lancet(link)
-    elif('cell' in link):
-        dicti=cell_extract(link)
-    elif('pubmed' in link):
-        dicti=ncbi_pubmed_extract(link)
-    elif('nature' in link):
-        dicti=scrape_nature(link)
+    try:
+        dicti={}
+        if('lancet' in link):
+            dicti=lancet(link)
+        elif('cell' in link):
+            dicti=cell_extract(link)
+        elif('pubmed' in link):
+            dicti=ncbi_pubmed_extract(link)
+        elif('nature' in link):
+            dicti=scrape_nature(link)
+    except:
+        print(link)
     return dicti
+    
+
 
 
 def clean_target(summary):
+    
     sections = re.split('<h2.*?>', summary)
     output = {}
     for section in sections:
-        print(section)
         if section!='':
             temp = re.split('</h2>', section)
+            if(len(temp)<=1):
+                break
             section_heading = re.sub(clean, '', temp[0]) 
             section_text = re.sub(clean, '', temp[1])
             output[section_heading] = section_text
@@ -67,12 +75,13 @@ def make_file(filepath, source_out, target_out):
 
             sections_original = scrape_function(row[0]) # outputs a dict
             sections_target = clean_target(row[1]) # outputs a dict
+            write_file(sections_original,sections_target)
             
 def write_file(sections_original,sections_target):
     listi=sections_original
     listi2=sections_target
     exception=[]
-    f = open("file5.txt","w")
+    f = open("file5.txt","a")
     for i in listi.keys():
         if i in listi2.keys():
             f.write('\n')
