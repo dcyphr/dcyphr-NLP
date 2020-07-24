@@ -88,24 +88,49 @@ def pmc_extract(link):
 
   return dicti
 
-def scimag():
-  for i in sci_direct:
-    result=requests.get(i)
-    src = result.text
-    soup=BeautifulSoup(src, 'lxml')
+def scimag(link):
+  dicti={}
+  result=requests.get(link)
+  src = result.text
+  soup=BeautifulSoup(src, 'lxml')
 
 
-    match = soup.find_all('div',class_='section abstract')
-    match2 = soup.find_all('div',class_='section discussion')
-    match3 = soup.find_all('div',class_='section conclusions')
-   
-    for j in match:
-      print(j.text)
-    for k in match2:
-      print(k.text)
+  match = soup.find_all('div',class_='section abstract')
+  intro=  soup.find_all('div',class_='section introduction')
+  match2 = soup.find_all('div',class_='section discussion')
+  match3 = soup.find_all('div',class_='section conclusions')
 
-    for f in match3:
-      print(f.text)
+  abstract=""
+  intro=""
+  discussion=""
+  conclusions=""
+
+  for j in match:
+    abstract+=abstract+j.text
+  for k in match2:
+    discussion+=k.text
+  for m in intro:
+    intro+= m.text
+
+  for f in match3:
+    conclusions+=(f.text)
+  if(abstract):
+    dicti['Abstract']=abstract
+  
+  if(intro):
+    dicti['Introduction']=intro
+
+  if(discussion):
+    dicti['Discussion']=discussion
+
+  if(conclusions):
+    dicti['Conclusion']=conclusions
+  return dicti
+  
+  
+
+    
+
 
     
 def medrxiv():

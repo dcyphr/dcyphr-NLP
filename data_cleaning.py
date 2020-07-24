@@ -36,7 +36,7 @@ def scrape_function(link):
             dicti=pmc_extract(link)
         elif('sciencemag' in link):
             print('scimag')
-            sciencemag()
+            scimag(link)
         elif('medrxiv' in link):
             print('medrxiv')
             medrxiv()
@@ -101,11 +101,14 @@ def write_file(sections_original,sections_target):
     exception=[]
     f = open("file5.txt","a")
     for i in listi.keys():
-        if i in listi2.keys():
-            f.write('\n')
-            f.write(i)
-            f.write('\n')
-            f.write(listi[i])
+        for j in listi2.keys():
+            if i in j:
+                f.write('\n')
+                f.write(i)
+                f.write('\n')
+                f.write(listi[i])
+
+
 
 
 
