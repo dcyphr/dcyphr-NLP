@@ -17,12 +17,16 @@ def scrape_function(link):
     try:
         dicti={}
         if('lancet' in link):
+            print('lancet')
             dicti=lancet(link)
         elif('cell' in link):
+            print('cell')
             dicti=cell_extract(link)
         elif('pubmed' in link):
+            print('pubmed')
             dicti=ncbi_pubmed_extract(link)
         elif('nature' in link):
+            print('nature')
             dicti=scrape_nature(link)
     except:
         print(link)

@@ -129,13 +129,15 @@ def scrape_nature(naturelink):
   soup=BeautifulSoup(src, 'lxml')
   match2 = soup.find_all('h2',class_='c-article-section__title')
   match = soup.find_all('div',class_='c-article-section')
-    
-  for i in range(len(match2)):
+  for i in range(min(len(match2),len(match))):
     key=(match2[i].text)
     l=len(key)
     dicti[key]=(match[i].text[l:])
     
   return dicti
+
+
+
 
 
 
