@@ -162,6 +162,51 @@ def scrape_nature(naturelink):
   return dicti
 
 
+def pnas(link):
+  dicti={}
+  result=requests.get(link)
+  src = result.text
+  soup=BeautifulSoup(src, 'lxml')
+
+
+  match = soup.find_all('div',class_='section abstract')
+  intro=  soup.find_all('div',class_='section results')
+  match2 = soup.find_all('div',class_='section discussion')
+  match3 = soup.find_all('div',class_='section materials-methods')
+
+  abstract=""
+  intro=""
+  discussion=""
+  conclusions=""
+
+  for j in match:
+    abstract+=abstract+j.text
+  for k in match2:
+    discussion+=k.text
+  for m in intro:
+    intro+= m.text
+
+  for f in match3:
+    conclusions+=(f.text)
+  if(abstract):
+    dicti['Abstract']=abstract
+  
+  if(intro):
+    dicti['Results']=intro
+
+  if(discussion):
+    dicti['Discussion']=discussion
+
+  if(conclusions):
+    dicti['Materials/methods']=conclusions
+  return dicti
+  
+  
+
+    
+
+
+
 
 
 

@@ -40,6 +40,9 @@ def scrape_function(link):
         elif('medrxiv' in link):
             print('medrxiv')
             medrxiv()
+        elif('pnas' in link):
+            print('pnas')
+            pnas(link)
         else:
             print('other',link)
     except:
@@ -114,6 +117,7 @@ def write_file2(sections_original,sections_target):
             s.write(i+'|')
             f.write(listi[i])
             s.write(listi2[i])
+
 def write_file(sections_original,sections_target):
     listi=sections_original
     listi2=sections_target
