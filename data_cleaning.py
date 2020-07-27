@@ -60,7 +60,7 @@ def clean_target(summary):
         if section!='':
             temp = re.split('</h2>', section)
             if(len(temp)<=1):
-                break
+                continue
             section_heading = re.sub(clean, '', temp[0]) 
             section_text = re.sub(clean, '', temp[1])
             output[section_heading] = section_text
@@ -127,7 +127,7 @@ def write_file(sections_original,sections_target):
 
     for i in listi.keys():
         for j in listi2.keys():
-            if i in j:
+            if i in j or j in i:
                 f.write('\n')
                 s.write('\n')
                 f.write(i+'|')
