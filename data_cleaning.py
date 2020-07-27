@@ -94,19 +94,24 @@ def make_file(filepath, source_out, target_out):
             sections_original = scrape_function(row[0]) # outputs a dict
             sections_target = clean_target(row[1]) # outputs a dict
             write_file(sections_original,sections_target)
+# python data_cleaning.py merge.csv source.txt target.txt
             
 def write_file(sections_original,sections_target):
     listi=sections_original
     listi2=sections_target
     exception=[]
-    f = open("file5.txt","a")
+    f = open("file6.txt","a")
+    s = open("summary6.txt","a")
+
     for i in listi.keys():
         for j in listi2.keys():
             if i in j:
                 f.write('\n')
-                f.write(i)
-                f.write('\n')
+                s.write('\n')
+                f.write(i+'|')
+                s.write(i+'|')
                 f.write(listi[i])
+                s.write(listi2[j])
 
 
 
