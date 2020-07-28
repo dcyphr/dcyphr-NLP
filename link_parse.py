@@ -133,19 +133,24 @@ def scimag(link):
 
 
     
-def medrxiv():
+def medrxiv(link):
   """Takes in a list of medrxiv links and retruns a list of dictionaries"""
-  for j in medrxiva:
-    result=requests.get(j)
-    src = result.text
-    soup=BeautifulSoup(src, 'lxml')
+  dicti={}
+  result=requests.get(link)
+  src = result.text
+  soup=BeautifulSoup(src, 'lxml')
 
-
-    match = soup.find_all('div',class_='section abstract')
+  header=soup.find_all('h2')
+  match = soup.find_all('div',class_='section abstract')
     
-    for i in match:
-      print(i.text)
-      print('\n')
+  for i in range(len(match)):
+    p=(match[i].text.split()[0])
+    k=len(p)
+    val=(match[i].text[k:])
+    dicti[p]=val
+  return dicti
+
+
 
 def scrape_nature(naturelink):
   dicti={}

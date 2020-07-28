@@ -56,6 +56,7 @@ def clean_target(summary):
     
     sections = re.split('<h2.*?>', summary)
     output = {}
+
     for section in sections:
         if section!='':
             temp = re.split('</h2>', section)
@@ -137,7 +138,7 @@ def write_file(sections_original,sections_target):
 
     
 def nice(sections_original,sections_target):
-    print(sections_target)
+
     a=open("file8.txt","a")
     b=open("summary8.txt","a")
     for j in sections_original.keys():
@@ -150,7 +151,8 @@ def nice(sections_original,sections_target):
             b.write(j+'|')
             b.write(sections_target[j])
         except:
-            print(sections_target)
+            if(sections_target=={}):
+                print(sections_target)
 
 
 
