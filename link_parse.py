@@ -25,7 +25,7 @@ def cell_extract(link):
   match=soup.find_all('div',class_='section-paragraph')
   # match=soup.find_all('section')
   if(match1==[]):
-    dicti['Abstract:']=(match[0].text)
+    dicti['Abstract']=(match[0].text)
     
 
   else:

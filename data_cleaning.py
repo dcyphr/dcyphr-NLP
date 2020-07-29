@@ -39,7 +39,7 @@ def scrape_function(link):
             scimag(link)
         elif('medrxiv' in link):
             print('medrxiv')
-            medrxiv()
+            medrxiv(link)
         elif('pnas' in link):
             print('pnas')
             pnas(link)
@@ -59,8 +59,11 @@ def clean_target(summary):
 
     for section in sections:
         if section!='':
+            
             temp = re.split('</h2>', section)
+            print(temp)
             if(len(temp)<=1):
+                print('temp is 1')
                 continue
             section_heading = re.sub(clean, '', temp[0]) 
             section_text = re.sub(clean, '', temp[1])
@@ -133,8 +136,10 @@ def write_file(sections_original,sections_target):
                 s.write('\n')
                 f.write(i+'|')
                 s.write(i+'|')
-                f.write(listi[i])
-                s.write(listi2[j])
+                m=" ".join(listi[i].split())
+                n=" ".join(listi2[j].split())
+                f.write(m)
+                s.write(n)
 
     
 def nice(sections_original,sections_target):
