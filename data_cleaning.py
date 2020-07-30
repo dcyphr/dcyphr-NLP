@@ -39,7 +39,10 @@ def scrape_function(link):
             scimag(link)
         elif('medrxiv' in link):
             print('medrxiv')
-            medrxiv()
+            medrxiv(link)
+        elif('pnas' in link):
+            print('pnas')
+            pnas(link)
         else:
             print('other',link)
     except:
@@ -53,11 +56,15 @@ def clean_target(summary):
     
     sections = re.split('<h2.*?>', summary)
     output = {}
+
     for section in sections:
         if section!='':
+            
             temp = re.split('</h2>', section)
+            print(temp)
             if(len(temp)<=1):
-                break
+                print('temp is 1')
+                continue
             section_heading = re.sub(clean, '', temp[0]) 
             section_text = re.sub(clean, '', temp[1])
             output[section_heading] = section_text
@@ -93,20 +100,66 @@ def make_file(filepath, source_out, target_out):
 
             sections_original = scrape_function(row[0]) # outputs a dict
             sections_target = clean_target(row[1]) # outputs a dict
+            if('References' in sections_original):
+                del sections_original['References']
             write_file(sections_original,sections_target)
+            nice(sections_original,sections_target)
+# python data_cleaning.py merge.csv source.txt target.txt
             
+def write_file2(sections_original,sections_target):
+    listi=sections_original
+    listi2=sections_target
+    exception=[]
+    f = open("file6.txt","a")
+    s = open("summary6.txt","a")
+
+    for i in listi.keys():
+        if i in listi2.keys():
+            f.write('\n')
+            s.write('\n')
+            f.write(i+'|')
+            s.write(i+'|')
+            f.write(listi[i])
+            s.write(listi2[i])
+
 def write_file(sections_original,sections_target):
     listi=sections_original
     listi2=sections_target
     exception=[]
-    f = open("file5.txt","a")
+    f = open("file6.txt","a")
+    s = open("summary6.txt","a")
+
     for i in listi.keys():
         for j in listi2.keys():
-            if i in j:
+            if i in j or j in i:
                 f.write('\n')
-                f.write(i)
-                f.write('\n')
-                f.write(listi[i])
+                s.write('\n')
+                f.write(i+'|')
+                s.write(i+'|')
+                m=" ".join(listi[i].split())
+                n=" ".join(listi2[j].split())
+                f.write(m)
+                s.write(n)
+
+    
+def nice(sections_original,sections_target):
+
+    a=open("file8.txt","a")
+    b=open("summary8.txt","a")
+    for j in sections_original.keys():
+        a.write('\n')
+        a.write(j+'|')
+        a.write(sections_original[j])
+       
+        try:
+            b.write('\n')
+            b.write(j+'|')
+            b.write(sections_target[j])
+        except:
+            if(sections_target=={}):
+                print(sections_target)
+
+
 
 
 

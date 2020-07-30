@@ -25,7 +25,7 @@ def cell_extract(link):
   match=soup.find_all('div',class_='section-paragraph')
   # match=soup.find_all('section')
   if(match1==[]):
-    dicti['Abstract:']=(match[0].text)
+    dicti['Abstract']=(match[0].text)
     
 
   else:
@@ -133,19 +133,24 @@ def scimag(link):
 
 
     
-def medrxiv():
+def medrxiv(link):
   """Takes in a list of medrxiv links and retruns a list of dictionaries"""
-  for j in medrxiva:
-    result=requests.get(j)
-    src = result.text
-    soup=BeautifulSoup(src, 'lxml')
+  dicti={}
+  result=requests.get(link)
+  src = result.text
+  soup=BeautifulSoup(src, 'lxml')
 
-
-    match = soup.find_all('div',class_='section abstract')
+  header=soup.find_all('h2')
+  match = soup.find_all('div',class_='section abstract')
     
-    for i in match:
-      print(i.text)
-      print('\n')
+  for i in range(len(match)):
+    p=(match[i].text.split()[0])
+    k=len(p)
+    val=(match[i].text[k:])
+    dicti[p]=val
+  return dicti
+
+
 
 def scrape_nature(naturelink):
   dicti={}
@@ -160,6 +165,51 @@ def scrape_nature(naturelink):
     dicti[key]=(match[i].text[l:])
     
   return dicti
+
+
+def pnas(link):
+  dicti={}
+  result=requests.get(link)
+  src = result.text
+  soup=BeautifulSoup(src, 'lxml')
+
+
+  match = soup.find_all('div',class_='section abstract')
+  intro=  soup.find_all('div',class_='section results')
+  match2 = soup.find_all('div',class_='section discussion')
+  match3 = soup.find_all('div',class_='section materials-methods')
+
+  abstract=""
+  intro=""
+  discussion=""
+  conclusions=""
+
+  for j in match:
+    abstract+=abstract+j.text
+  for k in match2:
+    discussion+=k.text
+  for m in intro:
+    intro+= m.text
+
+  for f in match3:
+    conclusions+=(f.text)
+  if(abstract):
+    dicti['Abstract']=abstract
+  
+  if(intro):
+    dicti['Results']=intro
+
+  if(discussion):
+    dicti['Discussion']=discussion
+
+  if(conclusions):
+    dicti['Materials/methods']=conclusions
+  return dicti
+  
+  
+
+    
+
 
 
 
