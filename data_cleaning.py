@@ -4,6 +4,7 @@ import sys
 import re
 from link_parse import *
 import csv
+import Levenshtein
 # USE THIS COMMAND TO RUN FILE:  python target_data_cleaning.py summary.csv summary.txt
 
 # compiled regex to remove HTML tags, nbsp, style attributes, percent signs, excessive spacing, and newlines
@@ -61,9 +62,7 @@ def clean_target(summary):
         if section!='':
             
             temp = re.split('</h2>', section)
-            print(temp)
             if(len(temp)<=1):
-                print('temp is 1')
                 continue
             section_heading = re.sub(clean, '', temp[0]) 
             section_text = re.sub(clean, '', temp[1])
@@ -102,52 +101,63 @@ def make_file(filepath, source_out, target_out):
             sections_target = clean_target(row[1]) # outputs a dict
             if('References' in sections_original):
                 del sections_original['References']
-            write_file(sections_original,sections_target)
-            nice(sections_original,sections_target)
+            write_file(sections_original,sections_target, source_out, target_out)
+            # COMMENTED OUT BY SHARDUL FOR ACCESS TOKEN PART nice(sections_original,sections_target)
+            
 # python data_cleaning.py merge.csv source.txt target.txt
             
-def write_file2(sections_original,sections_target):
-    listi=sections_original
-    listi2=sections_target
-    exception=[]
-    f = open("file6.txt","a")
-    s = open("summary6.txt","a")
+# def write_file2(sections_original,sections_target):
+#     listi=sections_original
+#     listi2=sections_target
+#     exception=[]
+#     f = open("file6.txt","a")
+#     s = open("summary6.txt","a")
 
-    for i in listi.keys():
-        if i in listi2.keys():
-            f.write('\n')
-            s.write('\n')
-            f.write(i+'|')
-            s.write(i+'|')
-            f.write(listi[i])
-            s.write(listi2[i])
+#     for i in listi.keys():
+#         if i in listi2.keys():
+#             # Writing to source
+#             f.write('\n')
+#             f.write(i+'|')
+#             f.write(listi[i])
+            
+#             # Writing to summary
+#             s.write('\n')
+#             s.write(i+'|')
+#             s.write(listi2[i])
 
-def write_file(sections_original,sections_target):
-    listi=sections_original
-    listi2=sections_target
-    exception=[]
-    f = open("file6.txt","a")
-    s = open("summary6.txt","a")
+def write_file(sections_original,sections_target, source_file, target_file):
 
-    for i in listi.keys():
-        for j in listi2.keys():
+    f = open(source_file,"a")
+    s = open(target_file,"a")
+
+    for i in sections_original.keys():
+        for j in sections_target.keys():
             if i in j or j in i:
                 f.write('\n')
-                s.write('\n')
+                f.write("<NbChars_" + str(calculate_nb_chars(sections_original[i], sections_target[j])) + ">")
+                f.write("<LevSim_" + str(get_levenshtein_similarity(sections_original[i], sections_target[j])) + ">")
                 f.write(i+'|')
-                s.write(i+'|')
-                m=" ".join(listi[i].split())
-                n=" ".join(listi2[j].split())
+                m=" ".join(sections_original[i].split())
                 f.write(m)
+
+                s.write('\n')
+                s.write(i+'|')
+                n=" ".join(sections_target[j].split())                
                 s.write(n)
 
     
 def nice(sections_original,sections_target):
 
-    a=open("file8.txt","a")
-    b=open("summary8.txt","a")
+    a=open("access_token_file8.txt","a")
+    b=open("access_token_summary8.txt","a")
     for j in sections_original.keys():
         a.write('\n')
+        # Append tokens to "a"
+        try:
+            a.write("<NbChars_" + str(calculate_nb_chars(sections_original[j], sections_target[j])) + ">")
+            a.write("<LevSim_" + str(get_levenshtein_similarity(sections_original[j], sections_target[j])) + ">") 
+        except KeyError:
+            print("Could not write token character for line" + j + "because of KeyError")
         a.write(j+'|')
         a.write(sections_original[j])
        
@@ -155,19 +165,17 @@ def nice(sections_original,sections_target):
             b.write('\n')
             b.write(j+'|')
             b.write(sections_target[j])
-        except:
+        except KeyError:
             if(sections_target=={}):
                 print(sections_target)
 
+def calculate_nb_chars(original_sentence, simple_sentence):
+    """Calculate and return the character length ratio between an original sentence 
+    and a simplified sentence"""
+    return round(len(simple_sentence)/len(original_sentence), 1)
 
-
-
-
-
-
-
-            
-
+def get_levenshtein_similarity(complex_sentence, simple_sentence):
+    return round(Levenshtein.ratio(complex_sentence, simple_sentence), 1)
 
 def main():
     parser = argparse.ArgumentParser(
