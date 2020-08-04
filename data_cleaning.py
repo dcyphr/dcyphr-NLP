@@ -4,77 +4,75 @@ import sys
 import re
 from link_parse import *
 import csv
+import Levenshtein
+
 # USE THIS COMMAND TO RUN FILE:  python target_data_cleaning.py summary.csv summary.txt
 
 # compiled regex to remove HTML tags, nbsp, style attributes, percent signs, excessive spacing, and newlines
 clean = re.compile("""<.*?>|&nbsp;|style=("|').*?("|')|%|([ ]|[\t]){2,}|\r?\n|\r""")
- 
+
+
 def scrape_function(link):
     # TODO
     """
     Write function to scrape links and return dictionary of {section_header:section_text}
     """
     try:
-        dicti={}
-        if('lancet' in link):
+        dicti = {}
+        if 'lancet' in link:
             print('lancet')
-            dicti=lancet(link)
-        elif('cell' in link):
+            dicti = lancet(link)
+        elif 'cell' in link:
             print('cell')
-            dicti=cell_extract(link)
-        elif('pubmed' in link):
+            dicti = cell_extract(link)
+        elif 'pubmed' in link:
             print('pubmed')
-            dicti=ncbi_pubmed_extract(link)
-        elif('nature' in link):
+            dicti = ncbi_pubmed_extract(link)
+        elif 'nature' in link:
             print('nature')
-            dicti=scrape_nature(link)
-        elif('nejm' in link):
+            dicti = scrape_nature(link)
+        elif ('nejm' in link):
             print('nejm')
-            dicti=nejm_extract(link)
-        elif('ncbi' in link):
+            dicti = nejm_extract(link)
+        elif ('ncbi' in link):
             print('pmc')
-            dicti=pmc_extract(link)
-        elif('sciencemag' in link):
+            dicti = pmc_extract(link)
+        elif ('sciencemag' in link):
             print('scimag')
             scimag(link)
-        elif('medrxiv' in link):
+        elif ('medrxiv' in link):
             print('medrxiv')
             medrxiv(link)
-        elif('pnas' in link):
+        elif 'pnas' in link:
             print('pnas')
             pnas(link)
         else:
-            print('other',link)
+            print('other', link)
     except:
         print(link)
     return dicti
-    
-
 
 
 def clean_target(summary):
-    
     sections = re.split('<h2.*?>', summary)
     output = {}
 
     for section in sections:
-        if section!='':
-            
+        if section != '':
+
             temp = re.split('</h2>', section)
-            print(temp)
-            if(len(temp)<=1):
-                print('temp is 1')
+            if (len(temp) <= 1):
                 continue
-            section_heading = re.sub(clean, '', temp[0]) 
+            section_heading = re.sub(clean, '', temp[0])
             section_text = re.sub(clean, '', temp[1])
             output[section_heading] = section_text
     return output
 
+
 def make_file(filepath, source_out, target_out):
+    maxInt = sys.maxsize
 
-   maxInt = sys.maxsize
-
-   while True:
+    while True:
         # decrease the maxInt value by factor 10
         # as long as the OverflowError occurs.
 
@@ -82,10 +80,10 @@ def make_file(filepath, source_out, target_out):
             csv.field_size_limit(maxInt)
             break
         except OverflowError:
-            maxInt = int(maxInt/10)
+            maxInt = int(maxInt / 10)
 
     # opens csv file
-   with open(filepath, newline='') as csvfile:
+    with open(filepath, newline='') as csvfile:
         file_reader = csv.reader(csvfile, delimiter=',')
 
         # for each row in csv, split up by section
@@ -98,88 +96,55 @@ def make_file(filepath, source_out, target_out):
             Check if section scraped from links matches with sections in summary
             """
 
-            sections_original = scrape_function(row[0]) # outputs a dict
-            sections_target = clean_target(row[1]) # outputs a dict
-            if('References' in sections_original):
+            sections_original = scrape_function(row[0])  # outputs a dict
+            sections_target = clean_target(row[1])  # outputs a dict
+            if ('References' in sections_original):
                 del sections_original['References']
-            write_file(sections_original,sections_target)
-            nice(sections_original,sections_target)
-# python data_cleaning.py merge.csv source.txt target.txt
-            
-def write_file2(sections_original,sections_target):
-    listi=sections_original
-    listi2=sections_target
-    exception=[]
-    f = open("file6.txt","a")
-    s = open("summary6.txt","a")
+            write_file(sections_original, sections_target, source_out, target_out)
 
-    for i in listi.keys():
-        if i in listi2.keys():
-            f.write('\n')
-            s.write('\n')
-            f.write(i+'|')
-            s.write(i+'|')
-            f.write(listi[i])
-            s.write(listi2[i])
 
-def write_file(sections_original,sections_target):
-    listi=sections_original
-    listi2=sections_target
-    exception=[]
-    f = open("file6.txt","a")
-    s = open("summary6.txt","a")
+def write_file(sections_original, sections_target, source_file, target_file):
+    f = open(source_file, "a")
+    s = open(target_file, "a")
 
-    for i in listi.keys():
-        for j in listi2.keys():
+    for i in sections_original.keys():
+        for j in sections_target.keys():
             if i in j or j in i:
                 f.write('\n')
-                s.write('\n')
-                f.write(i+'|')
-                s.write(i+'|')
-                m=" ".join(listi[i].split())
-                n=" ".join(listi2[j].split())
+                f.write("<NbChars_" + str(calculate_nb_chars(sections_original[i], sections_target[j])) + ">")
+                f.write("<LevSim_" + str(get_levenshtein_similarity(sections_original[i], sections_target[j])) + ">")
+                f.write(i + '|')
+                m = " ".join(sections_original[i].split())
                 f.write(m)
+
+                s.write('\n')
+                s.write(i + '|')
+                n = " ".join(sections_target[j].split())
                 s.write(n)
 
-    
-def nice(sections_original,sections_target):
 
-    a=open("file8.txt","a")
-    b=open("summary8.txt","a")
-    for j in sections_original.keys():
-        a.write('\n')
-        a.write(j+'|')
-        a.write(sections_original[j])
-       
-        try:
-            b.write('\n')
-            b.write(j+'|')
-            b.write(sections_target[j])
-        except:
-            if(sections_target=={}):
-                print(sections_target)
+def calculate_nb_chars(original_sentence, simple_sentence):
+    """Calculate and return the character length ratio between an original sentence 
+    and a simplified sentence"""
+    return round(len(simple_sentence) / len(original_sentence), 1)
 
 
-
-
-
-
-
-
-            
+def get_levenshtein_similarity(complex_sentence, simple_sentence):
+    """ Return the similarity between complex_sentence and simple_sentence """
+    return round(Levenshtein.ratio(complex_sentence, simple_sentence), 1)
 
 
 def main():
     parser = argparse.ArgumentParser(
-            description = 'Transforms csv (link, summary) to source.txt and target.txt',
-            formatter_class = argparse.ArgumentDefaultsHelpFormatter
-            )
-    parser.add_argument('src', type = str,
-            help = 'Filename for input csv')
+        description='Transforms csv (link, summary) to source.txt and target.txt',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    parser.add_argument('src', type=str,
+                        help='Filename for input csv')
     parser.add_argument('out_source', type=str,
-            help = 'Filename for output source.txt')
+                        help='Filename for output source.txt')
     parser.add_argument('out_target', type=str,
-            help = 'Filename for output target.txt')
+                        help='Filename for output target.txt')
     args = parser.parse_args()
 
     input_file = args.src
@@ -192,11 +157,12 @@ def main():
         os.remove(output_target)
     open(output_source, 'a').close()
     open(output_target, 'a').close()
-    
+
     make_file(input_file, output_source, output_target)
 
-    print(clean_target("<h2 style=blah>Abstract</h2><p>This is some text</p><h2>Introduction</h2><span>blah blah</span>"))
+    print(
+        clean_target("<h2 style=blah>Abstract</h2><p>This is some text</p><h2>Introduction</h2><span>blah blah</span>"))
+
 
 if __name__ == '__main__':
     main()
-
