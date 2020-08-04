@@ -130,6 +130,7 @@ def calculate_nb_chars(original_sentence, simple_sentence):
 
 
 def get_levenshtein_similarity(complex_sentence, simple_sentence):
+    """ Return the similarity between complex_sentence and simple_sentence """
     return round(Levenshtein.ratio(complex_sentence, simple_sentence), 1)
 
 
