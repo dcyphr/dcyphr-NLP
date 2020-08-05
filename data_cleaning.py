@@ -6,7 +6,7 @@ from link_parse import *
 import csv
 import Levenshtein
 
-# USE THIS COMMAND TO RUN FILE:  python target_data_cleaning.py summary.csv summary.txt
+# USE THIS COMMAND TO RUN FILE: python data_cleaning.py merge.csv source.txt target.txt
 
 # compiled regex to remove HTML tags, nbsp, style attributes, percent signs, excessive spacing, and newlines
 clean = re.compile("""<.*?>|&nbsp;|style=("|').*?("|')|%|([ ]|[\t]){2,}|\r?\n|\r""")
@@ -88,8 +88,6 @@ def make_file(filepath, source_out, target_out):
 
         # for each row in csv, split up by section
         for row in file_reader:
-            souce_article_link = row[0]
-            target_summary = row[1]
             # TODO
             """
             Scrape from source_article_link
@@ -104,23 +102,26 @@ def make_file(filepath, source_out, target_out):
 
 
 def write_file(sections_original, sections_target, source_file, target_file):
-    f = open(source_file, "a")
-    s = open(target_file, "a")
+    """ Write file after obtaining from sections_original, sections_target and writing into
+    source_file and target_file.
+    """
+    source = open(source_file, "a")
+    target = open(target_file, "a")
 
     for i in sections_original.keys():
         for j in sections_target.keys():
             if i in j or j in i:
-                f.write('\n')
-                f.write("<NbChars_" + str(calculate_nb_chars(sections_original[i], sections_target[j])) + ">")
-                f.write("<LevSim_" + str(get_levenshtein_similarity(sections_original[i], sections_target[j])) + ">")
-                f.write(i + '|')
-                m = " ".join(sections_original[i].split())
-                f.write(m)
+                source.write('\n')
+                source.write("<NbChars_" + str(calculate_nb_chars(sections_original[i], sections_target[j])) + ">")
+                source.write("<LevSim_" + str(get_levenshtein_similarity(sections_original[i], sections_target[j])) + ">")
+                source.write(i + '|')
+                data_source = " ".join(sections_original[i].split())
+                source.write(data_source)
 
-                s.write('\n')
-                s.write(i + '|')
-                n = " ".join(sections_target[j].split())
-                s.write(n)
+                target.write('\n')
+                target.write(i + '|')
+                data_target = " ".join(sections_target[j].split())
+                target.write(data_target)
 
 
 def calculate_nb_chars(original_sentence, simple_sentence):
