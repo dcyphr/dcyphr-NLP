@@ -114,12 +114,12 @@ def write_file(sections_original, sections_target, source_file, target_file):
                 source.write('\n')
                 source.write("<NbChars_" + str(calculate_nb_chars(sections_original[i], sections_target[j])) + ">")
                 source.write("<LevSim_" + str(get_levenshtein_similarity(sections_original[i], sections_target[j])) + ">")
-                source.write(i + '|')
+                source.write("<"+i +">")
                 data_source = " ".join(sections_original[i].split())
                 source.write(data_source)
 
                 target.write('\n')
-                target.write(i + '|')
+                target.write(i )
                 data_target = " ".join(sections_target[j].split())
                 target.write(data_target)
 
@@ -161,8 +161,8 @@ def main():
 
     make_file(input_file, output_source, output_target)
 
-    print(
-        clean_target("<h2 style=blah>Abstract</h2><p>This is some text</p><h2>Introduction</h2><span>blah blah</span>"))
+    # print(
+    #     clean_target("<h2 style=blah>Abstract</h2><p>This is some text</p><h2>Introduction</h2><span>blah blah</span>"))
 
 
 if __name__ == '__main__':
