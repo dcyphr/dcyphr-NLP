@@ -4,8 +4,10 @@ import sys
 import argparse
 import csv
 
+
 def make_file(filepath, outpath):
-    # compiled regex to remove HTML tags, nbsp, style attributes, percent signs, excessive spacing, and newlines
+    # compiled regex to remove HTML tags, nbsp, style attributes, percent
+    # signs, excessive spacing, and newlines
     clean = re.compile("""<.*?>|&nbsp;|style=("|').*?("|')|%|([ ]|[\t]){2,}|\r?\n|\r""")
     maxInt = sys.maxsize
 
@@ -26,24 +28,30 @@ def make_file(filepath, outpath):
         # for each row in csv, split up by section
         for row in file_reader:
             data = row[0]
-            sections = re.split('(<h2.*?>)', data) # regex to split by section
+            sections = re.split('(<h2.*?>)', data)  # regex to split by section
             for section in sections:
-                section = section.replace('</h2>', ' | ') # replaces closing tag with delimiter
-                section = re.sub(clean, '', section) # cleans section using compiled regex from above
-                target = open(outpath, 'a') # opens and writes into new file
+                # replaces closing tag with delimiter
+                section = section.replace('</h2>', ' | ')
+
+                # cleans section using compiled regex from above
+                section = re.sub(clean, '', section)
+             
+                # opens and writes and closes new file
+                target = open(outpath, 'a')
                 target.write(section + ' \n')
                 target.close()
 
+
 def main():
     parser = argparse.ArgumentParser(
-        description = 'Transforms dcyphr csv to target text file',
-        formatter_class = argparse.ArgumentDefaultsHelpFormatter
+        description='Transforms dcyphr csv to target text file',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument('src', type = str,
-                        help = 'Path to input csv')
-    parser.add_argument('out', type = str,
-                        help = 'Path to output csv')
-    
+    parser.add_argument('src', type=str,
+                        help='Path to input csv')
+    parser.add_argument('out', type=str,
+                        help='Path to output csv')
+
     args = parser.parse_args()
 
     filepath = args.src
@@ -54,6 +62,7 @@ def main():
     open(outpath, 'a').close()
 
     make_file(filepath, outpath)
+
 
 if __name__ == '__main__':
     main()
