@@ -36,7 +36,10 @@ def get_digest_original(article_id):
 
     for section in r['body']:
         if 'discussion' in section['title'].lower():
-            discussion = section['content'][0]['text']
+            try:
+                discussion = section['content'][0]['text']
+            except:
+                return 1
 
     abstract_discussion = abstract + discussion
     return (digest, abstract_discussion)
