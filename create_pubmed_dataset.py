@@ -31,7 +31,7 @@ def fetch_summaries(id_list):
     return results
 
 import json
-results = search('fever') # or any query you like
+results = search('covid') # or any query you like
 id_list = results['IdList'] # list of UIDs
 papers = fetch_details(id_list)
 for i in range(len(papers)):
