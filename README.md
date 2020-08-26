@@ -1,5 +1,9 @@
-# NLP-dev
+# dcyphr NLP playground 
 
-Testing out different models using Hugging Face transformers.
-Need to fine-tune BART and test on full-length article.
-Need to read in PDFs as structured documents if possible.
+## Main Idea
+Fine-tune CNN-DM pretrained BART on dcyphr dataset of manually produced summaries of biomedical literature. Deploy model in production so that dcyphr users have access to automatic summarization and can reinforce the model by manually pruning the output.
+
+## Todo
+- Fine-tune pretrained BART on dcyphr data
+- Discover alternative datasets for fine-tuning task
+- Build out human in the loop pipeline
