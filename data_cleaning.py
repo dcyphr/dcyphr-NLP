@@ -13,41 +13,31 @@ clean = re.compile("""<.*?>|&nbsp;|style=("|').*?("|')|%|([ ]|[\t]){2,}|\r?\n|\r
 
 
 def scrape_function(link):
-    # TODO
+
     """
     Write function to scrape links and return dictionary of {section_header:section_text}
     """
     try:
         dicti = {}
         if 'lancet' in link:
-            print('lancet')
             dicti = lancet(link)
         elif 'cell' in link:
-            print('cell')
             dicti = cell_extract(link)
         elif 'pubmed' in link:
-            print('pubmed')
             dicti = ncbi_pubmed_extract(link)
         elif 'nature' in link:
-            print('nature')
             dicti = scrape_nature(link)
         elif ('nejm' in link):
-            print('nejm')
             dicti = nejm_extract(link)
         elif ('ncbi' in link):
-            print('pmc')
             dicti = pmc_extract(link)
         elif ('sciencemag' in link):
-            print('scimag')
             scimag(link)
         elif ('medrxiv' in link):
-            print('medrxiv')
             medrxiv(link)
         elif 'pnas' in link:
-            print('pnas')
             pnas(link)
-        else:
-            print('other', link)
+
     except:
         print(link)
     return dicti
@@ -101,6 +91,16 @@ def make_file(filepath, source_out, target_out):
             write_file(sections_original, sections_target, source_out, target_out)
 
 
+def remove_space_num(s):
+    s=re.sub('\W+',' ',s).strip()
+    for i in range(len(s)):
+        if (s[i]==" "):
+            s= s[i+1:].strip()
+            break
+        
+    return s
+
+
 def write_file(sections_original, sections_target, source_file, target_file):
     """ Write file after obtaining from sections_original, sections_target and writing into
     source_file and target_file.
@@ -114,12 +114,12 @@ def write_file(sections_original, sections_target, source_file, target_file):
                 source.write('\n')
                 source.write("<NbChars_" + str(calculate_nb_chars(sections_original[i], sections_target[j])) + ">")
                 source.write("<LevSim_" + str(get_levenshtein_similarity(sections_original[i], sections_target[j])) + ">")
-                source.write("<"+i +">")
+                source.write("<"+ remove_space_num(i) +">")
                 data_source = " ".join(sections_original[i].split())
                 source.write(data_source)
 
                 target.write('\n')
-                target.write(i )
+                # target.write(remove_space_num(i))
                 data_target = " ".join(sections_target[j].split())
                 target.write(data_target)
 
@@ -161,8 +161,7 @@ def main():
 
     make_file(input_file, output_source, output_target)
 
-    # print(
-    #     clean_target("<h2 style=blah>Abstract</h2><p>This is some text</p><h2>Introduction</h2><span>blah blah</span>"))
+    
 
 
 if __name__ == '__main__':
